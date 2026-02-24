@@ -31,8 +31,8 @@ export default function PaywallGate({ children }: { children: React.ReactNode })
       <div className="paywall-blur">{children}</div>
 
       {/* Paywall overlay */}
-      <div className="fixed inset-0 z-40 flex items-center justify-center bg-background/60 backdrop-blur-sm">
-        <div className="bg-surface border border-border rounded-2xl p-8 md:p-12 max-w-md mx-6 text-center shadow-xl">
+      <div className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-background/60 backdrop-blur-sm py-24 px-6">
+        <div className="bg-surface border border-border rounded-2xl p-8 md:p-12 max-w-md w-full text-center shadow-xl">
           <div className="w-14 h-14 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg
               className="w-7 h-7 text-accent"

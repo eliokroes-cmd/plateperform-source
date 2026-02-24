@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Suspense } from "react";
 import DashboardSidebar from "@/components/DashboardSidebar";
+import { useRevenueCat } from "@/contexts/RevenueCatContext";
 
 export default function DashboardLayout({
   children,
@@ -14,16 +15,22 @@ export default function DashboardLayout({
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const router = useRouter();
+  const { isPro } = useRevenueCat();
 
   useEffect(() => {
-    const subscribed = localStorage.getItem("globalfuel_subscribed");
-    if (subscribed === "true") {
+    let subscribed = false;
+    try {
+      subscribed = localStorage.getItem("globalfuel_subscribed") === "true";
+    } catch {
+      // localStorage unavailable
+    }
+    if (subscribed || isPro) {
       setHasAccess(true);
     } else {
       router.push("/pricing");
     }
     setLoading(false);
-  }, [router]);
+  }, [router, isPro]);
 
   // Check screen size
   useEffect(() => {

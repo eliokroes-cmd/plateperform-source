@@ -49,7 +49,7 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop nav */}
-        <div className="flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-8">
           <Link
             href="/#regions"
             className="text-sm text-muted hover:text-foreground transition-colors"
@@ -70,7 +70,7 @@ export default function Navbar() {
           </Link>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-3">
           {/* Language Selector */}
           <div className="relative" ref={langRef}>
             <button

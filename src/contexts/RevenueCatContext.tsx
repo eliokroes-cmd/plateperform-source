@@ -21,19 +21,24 @@ export function RevenueCatProvider({ children }: { children: ReactNode }) {
 
   // Check localStorage for demo purposes
   useEffect(() => {
-    const subscribed = localStorage.getItem("globalfuel_subscribed");
-    if (subscribed === "true") {
-      setIsPro(true);
+    try {
+      const subscribed = localStorage.getItem("globalfuel_subscribed");
+      if (subscribed === "true") {
+        setIsPro(true);
+      }
+    } catch {
+      // localStorage unavailable
     }
     setLoading(false);
   }, []);
 
   const purchasePackage = () => {
-    // For now, just set localStorage as demo
-    // Full RevenueCat integration can be added later with proper setup
-    localStorage.setItem("globalfuel_subscribed", "true");
+    try {
+      localStorage.setItem("globalfuel_subscribed", "true");
+    } catch {
+      // localStorage unavailable (e.g. private browsing) — use in-memory state only
+    }
     setIsPro(true);
-    window.location.href = "/dashboard";
   };
 
   return (

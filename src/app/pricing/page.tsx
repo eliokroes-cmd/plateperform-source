@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -13,6 +14,7 @@ export default function PricingPage() {
   const { t, language, setLanguage } = useLanguage();
   const { packages, loading, purchasePackage } = useRevenueCat();
   const [purchasing, setPurchasing] = useState(false);
+  const router = useRouter();
   const [langOpen, setLangOpen] = useState(false);
   const langRef = useRef<HTMLDivElement>(null);
 
@@ -45,8 +47,9 @@ export default function PricingPage() {
   }, [langOpen]);
 
   const handleSubscribe = () => {
-    // Demo mode - just unlock premium
+    setPurchasing(true);
     purchasePackage();
+    router.push("/dashboard");
   };
 
   const monthlyText = {

@@ -46,10 +46,21 @@ export default function PricingPage() {
     };
   }, [langOpen]);
 
-  const handleSubscribe = () => {
+  const handleSubscribe = async () => {
     setPurchasing(true);
-    purchasePackage();
-    router.push("/dashboard");
+    try {
+      const pkg = packages.find(p =>
+        annual
+          ? p.packageType === "ANNUAL" || p.identifier.toLowerCase().includes("annual")
+          : p.packageType === "MONTHLY" || p.identifier.toLowerCase().includes("monthly")
+      ) ?? packages[0];
+      await purchasePackage(pkg);
+      router.push("/dashboard");
+    } catch {
+      // Purchase failed or was cancelled
+    } finally {
+      setPurchasing(false);
+    }
   };
 
   const monthlyText = {

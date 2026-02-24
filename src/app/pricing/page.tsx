@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -11,10 +10,9 @@ import { useRevenueCat } from "@/contexts/RevenueCatContext";
 import { Language } from "@/lib/translations";
 
 export default function PricingPage() {
-  const [annual, setAnnual] = useState(true);
   const { t, language, setLanguage } = useLanguage();
   const { packages, loading, purchasePackage } = useRevenueCat();
-  const [purchasing, setPurchasing] = useState(false);
+  const [purchasing, setPurchasing] = useState<"monthly" | "annual" | null>(null);
   const router = useRouter();
   const [langOpen, setLangOpen] = useState(false);
   const langRef = useRef<HTMLDivElement>(null);
@@ -30,34 +28,31 @@ export default function PricingPage() {
     setLangOpen(false);
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (langRef.current && !langRef.current.contains(event.target as Node)) {
         setLangOpen(false);
       }
     };
-
     if (langOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [langOpen]);
 
-  const handleSubscribe = async () => {
+  const handleSubscribe = async (isAnnual: boolean) => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       router.push("/signup");
       return;
     }
-    setPurchasing(true);
+    setPurchasing(isAnnual ? "annual" : "monthly");
     try {
       const { PackageType } = await import("@revenuecat/purchases-js");
       const pkg = packages.find(p =>
-        annual
+        isAnnual
           ? p.packageType === PackageType.Annual || p.identifier.toLowerCase().includes("annual")
           : p.packageType === PackageType.Monthly || p.identifier.toLowerCase().includes("monthly")
       ) ?? packages[0];
@@ -66,59 +61,26 @@ export default function PricingPage() {
     } catch {
       // Purchase failed or was cancelled
     } finally {
-      setPurchasing(false);
-    }
-  };
-
-  const monthlyText = {
-    EN: "Monthly",
-    NL: "Maandelijks",
-    ES: "Mensual"
-  };
-
-  const annualText = {
-    EN: "Annual",
-    NL: "Jaarlijks",
-    ES: "Anual"
-  };
-
-  const freeText = {
-    EN: {
-      title: "Free",
-      price: "/forever",
-      desc: "Preview the experience with limited access.",
-      feat1: "5 sample recipes",
-      feat2: "Basic macro info",
-      feat3: "No meal plans",
-      feat4: "No shopping lists",
-      cta: "Browse Free Recipes"
-    },
-    NL: {
-      title: "Gratis",
-      price: "/altijd",
-      desc: "Bekijk de ervaring met beperkte toegang.",
-      feat1: "5 voorbeeldrecepten",
-      feat2: "Basis macro info",
-      feat3: "Geen maaltijdplannen",
-      feat4: "Geen boodschappenlijsten",
-      cta: "Bekijk Gratis Recepten"
-    },
-    ES: {
-      title: "Gratis",
-      price: "/para siempre",
-      desc: "Vista previa de la experiencia con acceso limitado.",
-      feat1: "5 recetas de muestra",
-      feat2: "Información macro básica",
-      feat3: "Sin planes de comidas",
-      feat4: "Sin listas de compras",
-      cta: "Explorar Recetas Gratis"
+      setPurchasing(null);
     }
   };
 
   const popularText = {
     EN: "Most Popular",
     NL: "Meest Populair",
-    ES: "Más Popular"
+    ES: "Más Popular",
+  };
+
+  const monthlyLabel = {
+    EN: "Monthly",
+    NL: "Maandelijks",
+    ES: "Mensual",
+  };
+
+  const annualLabel = {
+    EN: "Annual",
+    NL: "Jaarlijks",
+    ES: "Anual",
   };
 
   const faqText = {
@@ -127,37 +89,36 @@ export default function PricingPage() {
       q1: "Can I cancel anytime?",
       a1: "Yes. Cancel your subscription at any time from your account settings. You'll retain access until the end of your billing period.",
       q2: "How does billing work?",
-      a2: "You'll be charged immediately when you subscribe. Choose monthly or annual billing. Annual subscribers save 22% compared to monthly.",
+      a2: "You'll be charged immediately when you subscribe. Choose monthly or annual billing. Annual subscribers save 17% compared to monthly.",
       q3: "Are new recipes added regularly?",
       a3: "We add 5-10 new recipes every week, sourced from professional chefs and sports nutritionists around the world.",
       q4: "Do you cater to dietary restrictions?",
-      a4: "Yes. Every recipe is tagged with dietary info, and you can filter by vegan, gluten-free, dairy-free, and more."
+      a4: "Yes. Every recipe is tagged with dietary info, and you can filter by vegan, gluten-free, dairy-free, and more.",
     },
     NL: {
       title: "Veelgestelde vragen",
       q1: "Kan ik altijd opzeggen?",
       a1: "Ja. Zeg je abonnement op elk moment op via je accountinstellingen. Je behoudt toegang tot het einde van je factureringsperiode.",
       q2: "Hoe werkt facturering?",
-      a2: "Je wordt direct bij inschrijving gefactureerd. Kies tussen maandelijkse of jaarlijkse facturering. Jaarlijkse abonnees besparen 22% vergeleken met maandelijks.",
+      a2: "Je wordt direct bij inschrijving gefactureerd. Kies tussen maandelijkse of jaarlijkse facturering. Jaarlijkse abonnees besparen 17% vergeleken met maandelijks.",
       q3: "Worden er regelmatig nieuwe recepten toegevoegd?",
       a3: "We voegen elke week 5-10 nieuwe recepten toe, afkomstig van professionele chefs en sportvoedingsdeskundigen over de hele wereld.",
       q4: "Houdt u rekening met dieetbeperkingen?",
-      a4: "Ja. Elk recept is gelabeld met dieetinformatie, en je kunt filteren op veganistisch, glutenvrij, zuivelvrij, en meer."
+      a4: "Ja. Elk recept is gelabeld met dieetinformatie, en je kunt filteren op veganistisch, glutenvrij, zuivelvrij, en meer.",
     },
     ES: {
       title: "Preguntas frecuentes",
       q1: "¿Puedo cancelar en cualquier momento?",
       a1: "Sí. Cancela tu suscripción en cualquier momento desde la configuración de tu cuenta. Mantendrás el acceso hasta el final de tu período de facturación.",
       q2: "¿Cómo funciona la facturación?",
-      a2: "Se te cobrará inmediatamente cuando te suscribas. Elige entre facturación mensual o anual. Los suscriptores anuales ahorran un 22% en comparación con los mensuales.",
+      a2: "Se te cobrará inmediatamente cuando te suscribas. Elige entre facturación mensual o anual. Los suscriptores anuales ahorran un 17% en comparación con los mensuales.",
       q3: "¿Se agregan nuevas recetas regularmente?",
       a3: "Agregamos entre 5 y 10 nuevas recetas cada semana, provenientes de chefs profesionales y nutricionistas deportivos de todo el mundo.",
       q4: "¿Atienden restricciones dietéticas?",
-      a4: "Sí. Cada receta está etiquetada con información dietética, y puedes filtrar por vegano, sin gluten, sin lácteos y más."
-    }
+      a4: "Sí. Cada receta está etiquetada con información dietética, y puedes filtrar por vegano, sin gluten, sin lácteos y más.",
+    },
   };
 
-  const currentFree = freeText[language];
   const currentFaq = faqText[language];
 
   return (
@@ -215,105 +176,19 @@ export default function PricingPage() {
             <p className="text-muted text-lg max-w-xl mx-auto">
               {t.pricing.subtitle}
             </p>
-
-            {/* Toggle */}
-            <div className="flex items-center justify-center gap-3 mt-8">
-              <button
-                onClick={() => setAnnual(false)}
-                className={`text-sm transition-colors ${!annual ? "text-foreground font-medium" : "text-muted hover:text-foreground"}`}
-              >
-                {monthlyText[language]}
-              </button>
-              <button
-                onClick={() => setAnnual(!annual)}
-                className={`relative w-14 h-7 rounded-full transition-colors ${annual ? "bg-accent" : "bg-border"}`}
-                aria-label="Toggle between monthly and annual billing"
-              >
-                <span
-                  className={`absolute top-1 left-1 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200 ${annual ? "translate-x-7" : "translate-x-0"}`}
-                />
-              </button>
-              <button
-                onClick={() => setAnnual(true)}
-                className={`text-sm transition-colors ${annual ? "text-foreground font-medium" : "text-muted hover:text-foreground"}`}
-              >
-                {annualText[language]}
-                <span className="ml-1.5 text-xs text-sage font-medium">{t.pricing.discount}</span>
-              </button>
-            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
-            {/* Free Plan */}
+            {/* Monthly Plan */}
             <div className="bg-surface border border-border rounded-2xl p-8">
               <h3 className="text-sm font-semibold text-muted uppercase tracking-wider mb-4">
-                {currentFree.title}
-              </h3>
-              <div className="flex items-baseline gap-1 mb-6">
-                <span className="text-4xl font-bold text-foreground">&euro;0</span>
-                <span className="text-muted text-sm">{currentFree.price}</span>
-              </div>
-              <p className="text-sm text-muted mb-6">
-                {currentFree.desc}
-              </p>
-              <ul className="text-sm text-muted space-y-3 mb-8">
-                <li className="flex items-center gap-3">
-                  <svg className="w-4 h-4 text-sage flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                  {currentFree.feat1}
-                </li>
-                <li className="flex items-center gap-3">
-                  <svg className="w-4 h-4 text-sage flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                  {currentFree.feat2}
-                </li>
-                <li className="flex items-center gap-3 text-muted/50">
-                  <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                  {currentFree.feat3}
-                </li>
-                <li className="flex items-center gap-3 text-muted/50">
-                  <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                  {currentFree.feat4}
-                </li>
-              </ul>
-              <Link
-                href="/recipes"
-                className="block w-full text-center border border-border text-foreground py-3 rounded-full font-medium hover:bg-foreground/5 transition-colors text-sm"
-              >
-                {currentFree.cta}
-              </Link>
-            </div>
-
-            {/* Pro Plan */}
-            <div className="bg-surface border-2 border-accent rounded-2xl p-8 relative">
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-white text-xs px-3 py-1 rounded-full font-medium">
-                {popularText[language]}
-              </span>
-              <h3 className="text-sm font-semibold text-accent uppercase tracking-wider mb-4">
-                {t.pricing.plan}
+                {monthlyLabel[language]}
               </h3>
               <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-4xl font-bold text-foreground">
-                  &euro;{annual ? "11.67" : "15"}
-                </span>
+                <span className="text-4xl font-bold text-foreground">&euro;15</span>
                 <span className="text-muted text-sm">{t.pricing.perMonth}</span>
               </div>
-              {annual && (
-                <p className="text-xs text-sage mb-4">
-                  {t.pricing.yearlyDetail}
-                </p>
-              )}
-              {!annual && (
-                <p className="text-xs text-muted mb-4">
-                  {t.pricing.monthly}
-                </p>
-              )}
+              <p className="text-xs text-muted mb-6">{t.pricing.monthly}</p>
               <p className="text-sm text-muted mb-6">
                 {t.pricing.subtitle}
               </p>
@@ -328,11 +203,49 @@ export default function PricingPage() {
                 ))}
               </ul>
               <button
-                onClick={() => handleSubscribe()}
-                disabled={purchasing}
+                onClick={() => handleSubscribe(false)}
+                disabled={purchasing !== null}
                 className="block w-full text-center bg-foreground text-background py-3 rounded-full font-medium hover:bg-foreground/90 transition-colors text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {purchasing ? "Processing..." : loading ? "Loading..." : t.pricing.cta}
+                {purchasing === "monthly" ? "Processing..." : loading ? "Loading..." : t.pricing.cta}
+              </button>
+              <p className="text-xs text-muted mt-3 text-center">
+                {t.pricing.trialInfo}
+              </p>
+            </div>
+
+            {/* Annual Plan */}
+            <div className="bg-surface border-2 border-accent rounded-2xl p-8 relative">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-white text-xs px-3 py-1 rounded-full font-medium">
+                {popularText[language]}
+              </span>
+              <h3 className="text-sm font-semibold text-accent uppercase tracking-wider mb-4">
+                {annualLabel[language]}
+              </h3>
+              <div className="flex items-baseline gap-1 mb-2">
+                <span className="text-4xl font-bold text-foreground">&euro;12.50</span>
+                <span className="text-muted text-sm">{t.pricing.perMonth}</span>
+              </div>
+              <p className="text-xs text-sage mb-6">{t.pricing.yearlyDetail}</p>
+              <p className="text-sm text-muted mb-6">
+                {t.pricing.subtitle}
+              </p>
+              <ul className="text-sm text-muted space-y-3 mb-8">
+                {t.pricing.features.map((feature, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <svg className="w-4 h-4 text-sage flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              <button
+                onClick={() => handleSubscribe(true)}
+                disabled={purchasing !== null}
+                className="block w-full text-center bg-foreground text-background py-3 rounded-full font-medium hover:bg-foreground/90 transition-colors text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {purchasing === "annual" ? "Processing..." : loading ? "Loading..." : t.pricing.cta}
               </button>
               <p className="text-xs text-muted mt-3 text-center">
                 {t.pricing.trialInfo}

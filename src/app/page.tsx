@@ -379,7 +379,7 @@ export default function HomePage() {
                   {t.pricing.discount}
                 </span>
                 <div className="flex items-baseline justify-center gap-0.5">
-                  <span className="text-3xl font-bold text-foreground">&euro;140</span>
+                  <span className="text-3xl font-bold text-foreground">&euro;150</span>
                   <span className="text-muted text-sm">{t.pricing.perYear}</span>
                 </div>
                 <p className="text-xs text-muted mt-1">{t.pricing.yearlyDetail}</p>

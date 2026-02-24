@@ -1,26 +1,56 @@
-## Instructions
+# PlatePerform — Project Context
 
-You are a software development agent working inside a sandbox hosted in the cloud by Vibecode. This system forwards port 3000 to the web; it is the only port that can be exposed from the sandbox to the outside world. This means you should create the project in /home/vibecode/workspace.
+## What is this project?
+PlatePerform is an athlete's international cookbook web app with subscription access. Built with Next.js, hosted on Netlify, connected to GitHub for auto-deploys.
 
-## Tech stack instructions
+## Source code location
+`/Users/elio/Desktop/PlatePerform Source`
 
-Read the /home/vibecode/workspace/STACK.md if it exists and apply the instructions.
+## Tech stack
+- **Framework**: Next.js (App Router, Turbopack) with TypeScript
+- **Styling**: Tailwind CSS v4
+- **Hosting**: Netlify (Next.js Runtime — NOT static export)
+- **Repo**: GitHub — `eliokroes-cmd/plateperform-source`
+- **Auth**: Supabase (`@supabase/supabase-js`)
+- **Payments**: RevenueCat Web Billing (`@revenuecat/purchases-js`)
+- **Package manager**: bun
 
-## Important instructions (do not forget)
+## Environment variables (in .env.local — never commit)
+- `NEXT_PUBLIC_REVENUECAT_API_KEY` = rcb_fpzaWZVQVnSEbQhTTRtGlQDOCmQO
+- `NEXT_PUBLIC_SUPABASE_URL` = https://pdgxsmszffnduexlloyp.supabase.co
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` = sb_publishable_fTzI3VUwJro4UMQr2JiHMg_YJNkz1Mp
+- `NEXT_PUBLIC_ADMIN_EMAIL` = eliokroes@hotmail.com
 
----
-alwaysApply: true
----
+## Admin access
+The email `eliokroes@hotmail.com` always bypasses the paywall and has full dashboard access. This is checked in `src/app/dashboard/layout.tsx`.
 
-## Downloading image files
+## Pricing
+- Monthly: €15/month
+- Annual: €150/year (€12.50/month) — shown as "Most Popular"
 
-When the user provides an image URL, you should download it using curl and save it to the file system in /tmp and then read the image from the local file system.
+## Key files
+- `src/app/page.tsx` — homepage
+- `src/app/pricing/page.tsx` — pricing page (2 cards: Monthly + Annual, no toggle)
+- `src/app/dashboard/layout.tsx` — paywall gate (checks Supabase session + RevenueCat isPro)
+- `src/app/login/page.tsx` — Supabase login
+- `src/app/signup/page.tsx` — Supabase signup (new users land here before paying)
+- `src/contexts/RevenueCatContext.tsx` — RevenueCat SDK setup, isPro state
+- `src/contexts/LanguageContext.tsx` — language switching (EN, NL, ES)
+- `src/lib/supabase.ts` — Supabase client
+- `src/lib/translations.ts` — all text strings for EN, NL, ES
+- `src/components/Navbar.tsx` — site navigation
+- `netlify.toml` — build config (`bun run build`, publish `.next`)
+- `next.config.ts` — minimal config (no static export)
 
-## Run the server
+## Deploy flow
+Push to GitHub → Netlify auto-deploys. Use:
+```
+git add <files> && git commit -m "message" && git push origin main
+```
 
-When you build the project, run the server in the background on port 3000. Even if it supports hot reloading, you should still restart the server after making changes to the code just in case, unless the user tells you otherwise.
-
-## Disk usage
-
-The only persistent storage is in /home/vibecode/workspace. The practical limit is about 1 GB. You should urgently instruct the user to reduce disk usage over 100 MB. Recommend storing large files in external services like AWS S3 or SoundCloud or Dropbox or Google Drive or other similar services if needed. The git repo itseslf should be under 100 MB ideally.
-
+## Important rules
+- Do NOT add `output: 'export'` to next.config.ts — breaks dynamic routes
+- Do NOT commit `node_modules/` or `.next/` — they're in .gitignore
+- Do NOT commit `.env.local` — it's in .gitignore
+- Always use `router.push()` for navigation, not `window.location.href`
+- Always wrap `localStorage` in try-catch (throws in iOS private mode)

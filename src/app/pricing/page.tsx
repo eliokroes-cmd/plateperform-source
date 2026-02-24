@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -47,6 +48,11 @@ export default function PricingPage() {
   }, [langOpen]);
 
   const handleSubscribe = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      router.push("/signup");
+      return;
+    }
     setPurchasing(true);
     try {
       const { PackageType } = await import("@revenuecat/purchases-js");

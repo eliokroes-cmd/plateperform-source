@@ -4,7 +4,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Suspense } from "react";
 import DashboardSidebar from "@/components/DashboardSidebar";
+import { supabase } from "@/lib/supabase";
 import { useRevenueCat } from "@/contexts/RevenueCatContext";
+
+const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
 export default function DashboardLayout({
   children,
@@ -18,21 +21,27 @@ export default function DashboardLayout({
   const { isPro } = useRevenueCat();
 
   useEffect(() => {
-    let subscribed = false;
-    try {
-      subscribed = localStorage.getItem("globalfuel_subscribed") === "true";
-    } catch {
-      // localStorage unavailable
-    }
-    if (subscribed || isPro) {
-      setHasAccess(true);
-    } else {
-      router.push("/pricing");
-    }
-    setLoading(false);
+    const checkAccess = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session) {
+        router.push("/login");
+        return;
+      }
+
+      const isAdmin = session.user.email === ADMIN_EMAIL;
+      if (isAdmin || isPro) {
+        setHasAccess(true);
+      } else {
+        router.push("/pricing");
+      }
+      setLoading(false);
+    };
+
+    checkAccess();
   }, [router, isPro]);
 
-  // Check screen size
+  // Check screen size for sidebar
   useEffect(() => {
     const handleResize = () => {
       setSidebarOpen(window.innerWidth >= 768);

@@ -7,28 +7,37 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { supabase } from "@/lib/supabase";
 
-export default function LoginPage() {
+export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (!email || !password) {
+    if (!email || !password || !confirm) {
       setError("Please fill in all fields.");
       return;
     }
+    if (password !== confirm) {
+      setError("Passwords do not match.");
+      return;
+    }
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signUp({ email, password });
     if (error) {
       setError(error.message);
       setLoading(false);
       return;
     }
-    router.push("/dashboard");
+    router.push("/pricing");
   };
 
   return (
@@ -39,14 +48,14 @@ export default function LoginPage() {
         <div className="max-w-sm mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-foreground mb-2">
-              Welcome back
+              Create your account
             </h1>
             <p className="text-sm text-muted">
-              Log in to access your recipes and meal plans.
+              Sign up to get full access to all recipes.
             </p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleSignup} className="space-y-4">
             <div>
               <label className="block text-xs text-muted mb-1.5" htmlFor="email">
                 Email
@@ -71,7 +80,21 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-surface border border-border rounded-lg px-4 py-2.5 text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-accent transition-colors"
-                placeholder="Your password"
+                placeholder="At least 6 characters"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs text-muted mb-1.5" htmlFor="confirm">
+                Confirm Password
+              </label>
+              <input
+                id="confirm"
+                type="password"
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
+                className="w-full bg-surface border border-border rounded-lg px-4 py-2.5 text-sm text-foreground placeholder:text-muted/50 focus:outline-none focus:border-accent transition-colors"
+                placeholder="Repeat your password"
               />
             </div>
 
@@ -84,15 +107,15 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full bg-foreground text-background py-3 rounded-full font-medium hover:bg-foreground/90 transition-colors text-sm cursor-pointer disabled:opacity-50"
             >
-              {loading ? "Logging in..." : "Log In"}
+              {loading ? "Creating account..." : "Create Account"}
             </button>
           </form>
 
-          <div className="text-center mt-6 space-y-2">
+          <div className="text-center mt-6">
             <p className="text-xs text-muted">
-              Don&apos;t have an account?{" "}
-              <Link href="/signup" className="text-accent hover:underline">
-                Sign up
+              Already have an account?{" "}
+              <Link href="/login" className="text-accent hover:underline">
+                Log in
               </Link>
             </p>
           </div>

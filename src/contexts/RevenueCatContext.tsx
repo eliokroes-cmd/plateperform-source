@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { Purchases, Package, PackageType } from "@revenuecat/purchases-js";
+import { supabase } from "@/lib/supabase";
 
 interface RevenueCatContextType {
   isPro: boolean;
@@ -12,7 +13,9 @@ interface RevenueCatContextType {
 
 const RevenueCatContext = createContext<RevenueCatContextType | undefined>(undefined);
 
-function getUserId(): string {
+async function getUserId(): Promise<string> {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.user?.id) return session.user.id;
   try {
     let userId = localStorage.getItem("rc_user_id");
     if (!userId) {
@@ -32,31 +35,34 @@ export function RevenueCatProvider({ children }: { children: ReactNode }) {
   const [purchases, setPurchases] = useState<Purchases | null>(null);
 
   useEffect(() => {
-    const apiKey = process.env.NEXT_PUBLIC_REVENUECAT_API_KEY;
-    if (!apiKey) return;
+    const init = async () => {
+      const apiKey = process.env.NEXT_PUBLIC_REVENUECAT_API_KEY;
+      if (!apiKey) return;
 
-    const userId = getUserId();
-    const instance = Purchases.configure(apiKey, userId);
-    setPurchases(instance);
+      const userId = await getUserId();
+      const instance = Purchases.configure(apiKey, userId);
+      setPurchases(instance);
 
-    instance.getCustomerInfo().then((info) => {
-      const active = Object.keys(info.entitlements.active).length > 0;
-      setIsPro(active);
-    }).catch(() => {
-      // Fallback to localStorage
       try {
-        setIsPro(localStorage.getItem("globalfuel_subscribed") === "true");
-      } catch { /* ignore */ }
-    });
+        const info = await instance.getCustomerInfo();
+        setIsPro(Object.keys(info.entitlements.active).length > 0);
+      } catch {
+        try {
+          setIsPro(localStorage.getItem("globalfuel_subscribed") === "true");
+        } catch { /* ignore */ }
+      }
 
-    instance.getOfferings().then((offerings) => {
-      const pkgs = offerings.current?.availablePackages ?? [];
-      setPackages(pkgs);
-    }).catch(() => {
-      setPackages([]);
-    }).finally(() => {
-      setLoading(false);
-    });
+      try {
+        const offerings = await instance.getOfferings();
+        setPackages(offerings.current?.availablePackages ?? []);
+      } catch {
+        setPackages([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    init();
   }, []);
 
   const purchasePackage = async (pkg?: Package) => {

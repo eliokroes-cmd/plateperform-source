@@ -11,9 +11,6 @@ interface RevenueCatContextType {
 
 const RevenueCatContext = createContext<RevenueCatContextType | undefined>(undefined);
 
-// Placeholder - RevenueCat integration to be completed
-const API_KEY = "test_BDkyIxEUHMamWuGzsGWEFWqzaxA";
-
 export function RevenueCatProvider({ children }: { children: ReactNode }) {
   const [isPro, setIsPro] = useState(false);
   const [packages, setPackages] = useState<any[]>([]);

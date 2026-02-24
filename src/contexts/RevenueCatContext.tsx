@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { Purchases, Package } from "@revenuecat/purchases-js";
+import { Purchases, Package, PackageType } from "@revenuecat/purchases-js";
 
 interface RevenueCatContextType {
   isPro: boolean;

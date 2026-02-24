@@ -49,10 +49,11 @@ export default function PricingPage() {
   const handleSubscribe = async () => {
     setPurchasing(true);
     try {
+      const { PackageType } = await import("@revenuecat/purchases-js");
       const pkg = packages.find(p =>
         annual
-          ? p.packageType === "ANNUAL" || p.identifier.toLowerCase().includes("annual")
-          : p.packageType === "MONTHLY" || p.identifier.toLowerCase().includes("monthly")
+          ? p.packageType === PackageType.Annual || p.identifier.toLowerCase().includes("annual")
+          : p.packageType === PackageType.Monthly || p.identifier.toLowerCase().includes("monthly")
       ) ?? packages[0];
       await purchasePackage(pkg);
       router.push("/dashboard");

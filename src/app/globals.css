@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+:root {
+  --background: #F5F2ED;
+  --foreground: #1F1D1B;
+  --accent: #B8956A;
+  --accent-dark: #9A7B54;
+  --accent-light: #D4C4B0;
+  --surface: #FFFFFF;
+  --muted: #7A756F;
+  --border: #E5E2DC;
+  --sage: #7A9A6D;
+  --sidebar-bg: #F5F2ED;
+  --sidebar-active: #EBE8E3;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-accent-dark: var(--accent-dark);
+  --color-accent-light: var(--accent-light);
+  --color-surface: var(--surface);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-sage: var(--sage);
+  --color-sidebar-bg: var(--sidebar-bg);
+  --color-sidebar-active: var(--sidebar-active);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Paywall blur overlay */
+.paywall-blur {
+  filter: blur(6px);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Subtle gradient backgrounds */
+.hero-gradient {
+  background: radial-gradient(ellipse at 50% 0%, rgba(184, 149, 106, 0.06) 0%, transparent 70%);
+}
+
+.section-gradient {
+  background: linear-gradient(180deg, #F5F2ED 0%, #EFECE7 100%);
+}
+
+/* Card hover */
+.recipe-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.recipe-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+
+/* FAQ */
+details summary::-webkit-details-marker {
+  display: none;
+}
+details summary {
+  list-style: none;
+}
+details[open] summary .faq-icon {
+  transform: rotate(45deg);
+}
+
+/* Region gradient backgrounds */
+.region-mediterranean {
+  background: linear-gradient(135deg, #EDE9E3 0%, #E5DFD7 100%);
+}
+.region-asian {
+  background: linear-gradient(135deg, #EDE7E1 0%, #E8DDD4 100%);
+}
+.region-latin {
+  background: linear-gradient(135deg, #E9EBE3 0%, #E3E5DC 100%);
+}
+.region-african {
+  background: linear-gradient(135deg, #EBE7E1 0%, #E5DED6 100%);
+}
+.region-european {
+  background: linear-gradient(135deg, #E5E8ED 0%, #DDE1E8 100%);
+}
+
+/* Sidebar nav */
+.sidebar-link {
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.sidebar-link:hover {
+  background-color: var(--sidebar-active);
+}
+.sidebar-link.active {
+  background-color: var(--sidebar-active);
+  font-weight: 500;
+}
+
+/* Category cards */
+.category-card {
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+}
+.category-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+}
+
+/* Hide scrollbar */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

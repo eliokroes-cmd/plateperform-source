@@ -26,7 +26,7 @@ The email `eliokroes@hotmail.com` always bypasses the paywall and has full dashb
 
 ## Pricing
 - Monthly: €7.99/month
-- Annual: €70/year (€5.83/month) — shown as "Most Popular"
+- Annual: €69.99/year (€5.83/month) — shown as "Most Popular"
 
 ## Key files
 - `src/app/page.tsx` — homepage

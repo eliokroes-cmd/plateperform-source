@@ -369,7 +369,7 @@ export default function HomePage() {
             <div className="grid grid-cols-2 gap-6 mb-6">
               <div className="border border-border rounded-xl p-4 text-center">
                 <div className="flex items-baseline justify-center gap-0.5">
-                  <span className="text-3xl font-bold text-foreground">&euro;15</span>
+                  <span className="text-3xl font-bold text-foreground">&euro;7.99</span>
                   <span className="text-muted text-sm">{t.pricing.perMonth}</span>
                 </div>
                 <p className="text-xs text-muted mt-1">{t.pricing.monthly}</p>
@@ -379,7 +379,7 @@ export default function HomePage() {
                   {t.pricing.discount}
                 </span>
                 <div className="flex items-baseline justify-center gap-0.5">
-                  <span className="text-3xl font-bold text-foreground">&euro;150</span>
+                  <span className="text-3xl font-bold text-foreground">&euro;70</span>
                   <span className="text-muted text-sm">{t.pricing.perYear}</span>
                 </div>
                 <p className="text-xs text-muted mt-1">{t.pricing.yearlyDetail}</p>

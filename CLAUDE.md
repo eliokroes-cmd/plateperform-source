@@ -25,8 +25,8 @@ PlatePerform is an athlete's international cookbook web app with subscription ac
 The email `eliokroes@hotmail.com` always bypasses the paywall and has full dashboard access. This is checked in `src/app/dashboard/layout.tsx`.
 
 ## Pricing
-- Monthly: €15/month
-- Annual: €150/year (€12.50/month) — shown as "Most Popular"
+- Monthly: €7.99/month
+- Annual: €70/year (€5.83/month) — shown as "Most Popular"
 
 ## Key files
 - `src/app/page.tsx` — homepage

@@ -89,7 +89,7 @@ export default function PricingPage() {
       q1: "Can I cancel anytime?",
       a1: "Yes. Cancel your subscription at any time from your account settings. You'll retain access until the end of your billing period.",
       q2: "How does billing work?",
-      a2: "You'll be charged immediately when you subscribe. Choose monthly or annual billing. Annual subscribers save 17% compared to monthly.",
+      a2: "You'll be charged immediately when you subscribe. Choose monthly or annual billing. Annual subscribers save 27% compared to monthly.",
       q3: "Are new recipes added regularly?",
       a3: "We add 5-10 new recipes every week, sourced from professional chefs and sports nutritionists around the world.",
       q4: "Do you cater to dietary restrictions?",
@@ -100,7 +100,7 @@ export default function PricingPage() {
       q1: "Kan ik altijd opzeggen?",
       a1: "Ja. Zeg je abonnement op elk moment op via je accountinstellingen. Je behoudt toegang tot het einde van je factureringsperiode.",
       q2: "Hoe werkt facturering?",
-      a2: "Je wordt direct bij inschrijving gefactureerd. Kies tussen maandelijkse of jaarlijkse facturering. Jaarlijkse abonnees besparen 17% vergeleken met maandelijks.",
+      a2: "Je wordt direct bij inschrijving gefactureerd. Kies tussen maandelijkse of jaarlijkse facturering. Jaarlijkse abonnees besparen 27% vergeleken met maandelijks.",
       q3: "Worden er regelmatig nieuwe recepten toegevoegd?",
       a3: "We voegen elke week 5-10 nieuwe recepten toe, afkomstig van professionele chefs en sportvoedingsdeskundigen over de hele wereld.",
       q4: "Houdt u rekening met dieetbeperkingen?",
@@ -111,7 +111,7 @@ export default function PricingPage() {
       q1: "¿Puedo cancelar en cualquier momento?",
       a1: "Sí. Cancela tu suscripción en cualquier momento desde la configuración de tu cuenta. Mantendrás el acceso hasta el final de tu período de facturación.",
       q2: "¿Cómo funciona la facturación?",
-      a2: "Se te cobrará inmediatamente cuando te suscribas. Elige entre facturación mensual o anual. Los suscriptores anuales ahorran un 17% en comparación con los mensuales.",
+      a2: "Se te cobrará inmediatamente cuando te suscribas. Elige entre facturación mensual o anual. Los suscriptores anuales ahorran un 27% en comparación con los mensuales.",
       q3: "¿Se agregan nuevas recetas regularmente?",
       a3: "Agregamos entre 5 y 10 nuevas recetas cada semana, provenientes de chefs profesionales y nutricionistas deportivos de todo el mundo.",
       q4: "¿Atienden restricciones dietéticas?",
@@ -185,7 +185,7 @@ export default function PricingPage() {
                 {monthlyLabel[language]}
               </h3>
               <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-4xl font-bold text-foreground">&euro;15</span>
+                <span className="text-4xl font-bold text-foreground">&euro;7.99</span>
                 <span className="text-muted text-sm">{t.pricing.perMonth}</span>
               </div>
               <p className="text-xs text-muted mb-6">{t.pricing.monthly}</p>
@@ -223,7 +223,7 @@ export default function PricingPage() {
                 {annualLabel[language]}
               </h3>
               <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-4xl font-bold text-foreground">&euro;12.50</span>
+                <span className="text-4xl font-bold text-foreground">&euro;5.83</span>
                 <span className="text-muted text-sm">{t.pricing.perMonth}</span>
               </div>
               <p className="text-xs text-sage mb-6">{t.pricing.yearlyDetail}</p>

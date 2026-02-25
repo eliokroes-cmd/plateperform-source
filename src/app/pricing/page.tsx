@@ -223,8 +223,8 @@ export default function PricingPage() {
                 {annualLabel[language]}
               </h3>
               <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-4xl font-bold text-foreground">&euro;5.83</span>
-                <span className="text-muted text-sm">{t.pricing.perMonth}</span>
+                <span className="text-4xl font-bold text-foreground">&euro;69.99</span>
+                <span className="text-muted text-sm">{t.pricing.perYear}</span>
               </div>
               <p className="text-xs text-sage mb-6">{t.pricing.yearlyDetail}</p>
               <p className="text-sm text-muted mb-6">

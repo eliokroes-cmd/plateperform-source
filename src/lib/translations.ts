@@ -162,7 +162,7 @@ export const translations = {
       yearly: "Save €26",
       perMonth: "/mo",
       perYear: "/yr",
-      yearlyDetail: "€5.83/mo · Save €26",
+      yearlyDetail: "€5.83 per month",
       discount: "27% OFF",
       features: [
         "Complete recipe collection",
@@ -394,7 +394,7 @@ export const translations = {
       yearly: "Bespaar €26",
       perMonth: "/mnd",
       perYear: "/jr",
-      yearlyDetail: "€5,83/mnd · Bespaar €26",
+      yearlyDetail: "€5,83 per maand",
       discount: "27% KORTING",
       features: [
         "Complete receptenverzameling",
@@ -626,7 +626,7 @@ export const translations = {
       yearly: "Ahorra €26",
       perMonth: "/mes",
       perYear: "/año",
-      yearlyDetail: "€5,83/mes · Ahorra €26",
+      yearlyDetail: "€5,83 al mes",
       discount: "27% DE DESCUENTO",
       features: [
         "Colección completa de recetas",

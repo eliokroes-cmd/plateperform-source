@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { PackageType } from "@revenuecat/purchases-js";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -13,9 +14,16 @@ export default function PricingPage() {
   const { t, language, setLanguage } = useLanguage();
   const { packages, loading, purchasePackage } = useRevenueCat();
   const [purchasing, setPurchasing] = useState<"monthly" | "annual" | null>(null);
+  const [session, setSession] = useState<Awaited<ReturnType<typeof supabase.auth.getSession>>["data"]["session"] | undefined>(undefined);
   const router = useRouter();
   const [langOpen, setLangOpen] = useState(false);
   const langRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setSession(data.session));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => setSession(s));
+    return () => subscription.unsubscribe();
+  }, []);
 
   const languages = [
     { code: "EN" as Language, label: "English", flag: "🇬🇧" },
@@ -43,14 +51,13 @@ export default function PricingPage() {
   }, [langOpen]);
 
   const handleSubscribe = async (isAnnual: boolean) => {
-    const { data: { session } } = await supabase.auth.getSession();
+    if (session === undefined) return; // still loading
     if (!session) {
       router.push("/signup");
       return;
     }
     setPurchasing(isAnnual ? "annual" : "monthly");
     try {
-      const { PackageType } = await import("@revenuecat/purchases-js");
       const pkg = packages.find(p =>
         isAnnual
           ? p.packageType === PackageType.Annual || p.identifier.toLowerCase().includes("annual")
@@ -207,7 +214,7 @@ export default function PricingPage() {
                 disabled={purchasing !== null}
                 className="block w-full text-center bg-foreground text-background py-3 rounded-full font-medium hover:bg-foreground/90 transition-colors text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {purchasing === "monthly" ? "Processing..." : loading ? "Loading..." : t.pricing.cta}
+                {purchasing === "monthly" ? "Processing..." : (loading || session === undefined) ? "Loading..." : t.pricing.cta}
               </button>
               <p className="text-xs text-muted mt-3 text-center">
                 {t.pricing.trialInfo}
@@ -245,7 +252,7 @@ export default function PricingPage() {
                 disabled={purchasing !== null}
                 className="block w-full text-center bg-foreground text-background py-3 rounded-full font-medium hover:bg-foreground/90 transition-colors text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {purchasing === "annual" ? "Processing..." : loading ? "Loading..." : t.pricing.cta}
+                {purchasing === "annual" ? "Processing..." : (loading || session === undefined) ? "Loading..." : t.pricing.cta}
               </button>
               <p className="text-xs text-muted mt-3 text-center">
                 {t.pricing.trialInfo}

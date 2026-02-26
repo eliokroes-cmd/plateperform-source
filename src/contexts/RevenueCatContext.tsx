@@ -35,11 +35,10 @@ export function RevenueCatProvider({ children }: { children: ReactNode }) {
   const [purchases, setPurchases] = useState<Purchases | null>(null);
 
   useEffect(() => {
-    const init = async () => {
-      const apiKey = process.env.NEXT_PUBLIC_REVENUECAT_API_KEY;
-      if (!apiKey) return;
+    const apiKey = process.env.NEXT_PUBLIC_REVENUECAT_API_KEY;
+    if (!apiKey) return;
 
-      const userId = await getUserId();
+    const initRC = async (userId: string) => {
       const instance = Purchases.configure(apiKey, userId);
       setPurchases(instance);
 
@@ -57,12 +56,26 @@ export function RevenueCatProvider({ children }: { children: ReactNode }) {
         setPackages(offerings.current?.availablePackages ?? []);
       } catch {
         setPackages([]);
-      } finally {
-        setLoading(false);
       }
     };
 
-    init();
+    const start = async () => {
+      const userId = await getUserId();
+      await initRC(userId);
+      setLoading(false);
+    };
+
+    start();
+
+    // Re-initialize RC with Supabase user ID when the user signs in,
+    // so any purchase made before login transfers to their account.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session?.user?.id) {
+        await initRC(session.user.id);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const purchasePackage = async (pkg?: Package) => {

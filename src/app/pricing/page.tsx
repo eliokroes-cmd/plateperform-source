@@ -51,11 +51,6 @@ export default function PricingPage() {
   }, [langOpen]);
 
   const handleSubscribe = async (isAnnual: boolean) => {
-    if (session === undefined) return; // still loading
-    if (!session) {
-      router.push("/signup");
-      return;
-    }
     setPurchasing(isAnnual ? "annual" : "monthly");
     try {
       const pkg = packages.find(p =>
@@ -64,7 +59,12 @@ export default function PricingPage() {
           : p.packageType === PackageType.Monthly || p.identifier.toLowerCase().includes("monthly")
       ) ?? packages[0];
       await purchasePackage(pkg);
-      router.push("/dashboard");
+      // After purchase: go to dashboard if logged in, otherwise sign up to link the subscription
+      if (session) {
+        router.push("/dashboard");
+      } else {
+        router.push("/signup");
+      }
     } catch {
       // Purchase failed or was cancelled
     } finally {
@@ -214,7 +214,7 @@ export default function PricingPage() {
                 disabled={purchasing !== null}
                 className="block w-full text-center bg-foreground text-background py-3 rounded-full font-medium hover:bg-foreground/90 transition-colors text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {purchasing === "monthly" ? "Processing..." : (loading || session === undefined) ? "Loading..." : t.pricing.cta}
+                {purchasing === "monthly" ? "Processing..." : loading ? "Loading..." : t.pricing.cta}
               </button>
               <p className="text-xs text-muted mt-3 text-center">
                 {t.pricing.trialInfo}
@@ -252,7 +252,7 @@ export default function PricingPage() {
                 disabled={purchasing !== null}
                 className="block w-full text-center bg-foreground text-background py-3 rounded-full font-medium hover:bg-foreground/90 transition-colors text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {purchasing === "annual" ? "Processing..." : (loading || session === undefined) ? "Loading..." : t.pricing.cta}
+                {purchasing === "annual" ? "Processing..." : loading ? "Loading..." : t.pricing.cta}
               </button>
               <p className="text-xs text-muted mt-3 text-center">
                 {t.pricing.trialInfo}
